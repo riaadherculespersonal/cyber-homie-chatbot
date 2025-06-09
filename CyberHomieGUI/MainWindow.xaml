@@ -1,82 +1,73 @@
 ﻿<Window x:Class="CyberHomieGUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="CyberHomie – Digital Defender" Height="600" Width="800"
-        Background="Black">
-    <TabControl>
-        <!-- Chatbot Tab -->
-        <TabItem Header="Chatbot">
-            <Grid Background="Black">
-                <StackPanel Margin="20">
-                    <TextBlock Text="🤖 CyberHomie – Digital Defender"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Foreground="Cyan"
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,20"/>
+        Title="CyberHomie – Digital Defender" Height="600" Width="800" Background="Black">
+    <Grid>
+        <TabControl>
+            <!-- Chatbot Tab -->
+            <TabItem Header="Chatbot">
+                <Grid Background="Black" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="🤖 CyberHomie – Digital Defender" FontSize="24" FontWeight="Bold" Foreground="Cyan" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+                        <ScrollViewer Height="350" VerticalScrollBarVisibility="Auto" Background="Black">
+                            <TextBlock x:Name="ChatHistoryTextBlock" TextWrapping="Wrap" Foreground="White"/>
+                        </ScrollViewer>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBox x:Name="UserInputTextBox" Width="600" Height="30" FontSize="14"/>
+                            <Button Content="Send" Width="100" Height="30" Background="Cyan" Click="SendButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
 
-                    <ScrollViewer Height="350" VerticalScrollBarVisibility="Auto" Background="Black">
-                        <TextBlock x:Name="ChatHistoryTextBlock" Foreground="White" TextWrapping="Wrap"/>
-                    </ScrollViewer>
+            <!-- Task Assistant Tab -->
+            <TabItem Header="Task Assistant">
+                <Grid Background="Black" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="📅 Task Assistant – Cyber Reminder" FontSize="24" FontWeight="Bold" Foreground="Cyan" Margin="0,0,0,20" HorizontalAlignment="Center"/>
 
-                    <DockPanel Margin="0,10,0,0">
-                        <TextBox x:Name="UserInputBox" Width="600" Height="30" FontSize="14" Margin="0,0,10,0"/>
-                        <Button Content="Send" Width="100" Background="Cyan" Click="SendButton_Click"/>
-                    </DockPanel>
-                </StackPanel>
-            </Grid>
-        </TabItem>
+                        <TextBlock Text="Task Title:" Foreground="White"/>
+                        <TextBox x:Name="TitleTextBox" Height="25" Margin="0,5"/>
 
-        <!-- Task Assistant Tab -->
-        <TabItem Header="Task Assistant">
-            <Grid Background="Black" Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Title Label -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Title Box -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Description Label -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Description Box -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Date Label -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Date Picker -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Button -->
-                    <RowDefinition Height="*"/>
-                    <!-- Task Grid -->
-                    <RowDefinition Height="Auto"/>
-                    <!-- Mark/Delete Buttons -->
-                </Grid.RowDefinitions>
+                        <TextBlock Text="Task Description:" Foreground="White"/>
+                        <TextBox x:Name="DescriptionTextBox" Height="25" Margin="0,5"/>
 
-                <TextBlock Text="Task Title:" Foreground="White" Grid.Row="0"/>
-                <TextBox x:Name="TaskTitleBox" Grid.Row="1" Height="30"/>
+                        <TextBlock Text="Reminder Date:" Foreground="White"/>
+                        <DatePicker x:Name="ReminderDatePicker" Height="25" Margin="0,5"/>
 
-                <TextBlock Text="Task Description:" Foreground="White" Grid.Row="2" Margin="0,10,0,0"/>
-                <TextBox x:Name="TaskDescriptionBox" Grid.Row="3" Height="30"/>
+                        <Button Content="➕ Add Task" Click="AddTaskButton_Click" Background="Cyan" Height="30" Margin="0,10" Width="150" HorizontalAlignment="Center"/>
 
-                <TextBlock Text="Reminder Date:" Foreground="White" Grid.Row="4" Margin="0,10,0,0"/>
-                <DatePicker x:Name="ReminderDatePicker" Grid.Row="5" Height="30"/>
+                        <ListView x:Name="TaskListView" Margin="0,10">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}"/>
+                                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"/>
+                                    <GridViewColumn Header="Reminder Date" DisplayMemberBinding="{Binding ReminderDate}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
 
-                <Button Content="➕ Add Task" Grid.Row="6" Height="40" Margin="0,10,0,10"
-                        Background="Cyan" Click="AddTaskButton_Click"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                            <Button Content="✔ Mark Done" Click="MarkDoneButton_Click" Width="100" Margin="10"/>
+                            <Button Content="🗑 Delete" Click="DeleteTaskButton_Click" Width="100" Margin="10"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
 
-                <DataGrid x:Name="TaskDataGrid" Grid.Row="7" AutoGenerateColumns="False" Height="200"
-                          HeadersVisibility="Column" CanUserAddRows="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
-                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
-                        <DataGridTextColumn Header="Reminder Date" Binding="{Binding ReminderDate}" Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-
-                <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Right" Margin="0,10,0,0">
-                    <Button Content="✔️ Mark Done" Margin="5" Click="MarkDoneButton_Click"/>
-                    <Button Content="🗑️ Delete" Margin="5" Click="DeleteTaskButton_Click"/>
-                </StackPanel>
-            </Grid>
-        </TabItem>
-    </TabControl>
+            <!-- Quiz Tab -->
+            <TabItem Header="Quiz">
+                <Grid Background="Black" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="🧠 Cybersecurity Quiz" FontSize="24" FontWeight="Bold" Foreground="Cyan" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="QuestionTextBlock" Text="Question will appear here." FontSize="16" Foreground="White" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                        <StackPanel x:Name="AnswerButtonsPanel" Margin="0,0,0,10"/>
+                        <Button x:Name="NextQuestionButton" Content="Next Question" Click="NextQuestionButton_Click" Background="Cyan" Margin="0,10,0,0" HorizontalAlignment="Center" Width="150"/>
+                        <TextBlock x:Name="FeedbackTextBlock" FontSize="14" Foreground="LightGreen" Margin="0,10,0,0"/>
+                        <TextBlock x:Name="ScoreTextBlock" FontSize="16" Foreground="Yellow" FontWeight="Bold" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>

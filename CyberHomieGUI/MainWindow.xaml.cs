@@ -7,87 +7,165 @@ namespace CyberHomieGUI
 {
     public partial class MainWindow : Window
     {
-        private List<TaskItem> tasks = new List<TaskItem>();
-
         public MainWindow()
         {
             InitializeComponent();
-            TaskDataGrid.ItemsSource = tasks;
+            LoadQuizQuestions();
+            DisplayCurrentQuestion();
         }
 
-        // Chatbot interaction
+        // ========== CHATBOT ==========
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            string userInput = UserInputBox.Text.Trim();
-            if (!string.IsNullOrEmpty(userInput))
-            {
-                ChatHistoryTextBlock.Text += $"You: {userInput}\n";
-                string botReply = GetBotReply(userInput);
-                ChatHistoryTextBlock.Text += $"CyberHomie: {botReply}\n";
-                UserInputBox.Clear();
-            }
+            string userInput = UserInputTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(userInput)) return;
+
+            ChatHistoryTextBlock.Text += $"You: {userInput}\nCyberHomie: Hey there! Ready to learn about cybersecurity?\n";
+            UserInputTextBox.Clear();
         }
 
-        private string GetBotReply(string input)
+        // ========== TASK ASSISTANT ==========
+        public class TaskItem
         {
-            // Basic canned reply for now
-            return "Hey there! Ready to learn about cybersecurity?";
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string ReminderDate { get; set; }
         }
 
-        // Task Assistant logic
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            string title = TaskTitleBox.Text.Trim();
-            string description = TaskDescriptionBox.Text.Trim();
-            DateTime? date = ReminderDatePicker.SelectedDate;
-
-            if (!string.IsNullOrWhiteSpace(title) && date != null)
+            if (string.IsNullOrWhiteSpace(TitleTextBox.Text) || string.IsNullOrWhiteSpace(DescriptionTextBox.Text))
             {
-                TaskItem task = new TaskItem
-                {
-                    Title = title,
-                    Description = description,
-                    ReminderDate = date.Value,
-                    IsCompleted = false
-                };
-
-                tasks.Add(task);
-                TaskDataGrid.Items.Refresh();
-
-                TaskTitleBox.Clear();
-                TaskDescriptionBox.Clear();
-                ReminderDatePicker.SelectedDate = null;
+                MessageBox.Show("Please fill in all fields.");
+                return;
             }
-            else
+
+            TaskItem task = new TaskItem
             {
-                MessageBox.Show("Please enter a task title and select a date.", "Missing Info", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+                Title = TitleTextBox.Text,
+                Description = DescriptionTextBox.Text,
+                ReminderDate = ReminderDatePicker.SelectedDate?.ToShortDateString() ?? "No Date"
+            };
+
+            TaskListView.Items.Add(task);
+            TitleTextBox.Clear();
+            DescriptionTextBox.Clear();
+            ReminderDatePicker.SelectedDate = null;
         }
 
         private void MarkDoneButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TaskDataGrid.SelectedItem is TaskItem selectedTask)
+            if (TaskListView.SelectedItem != null)
             {
-                selectedTask.IsCompleted = true;
-                TaskDataGrid.Items.Refresh();
+                MessageBox.Show("Task marked as done!");
             }
         }
 
         private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TaskDataGrid.SelectedItem is TaskItem selectedTask)
+            if (TaskListView.SelectedItem != null)
             {
-                tasks.Remove(selectedTask);
-                TaskDataGrid.Items.Refresh();
+                TaskListView.Items.Remove(TaskListView.SelectedItem);
             }
         }
-    }
 
-    public class TaskItem
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime ReminderDate { get; set; }
-        public bool IsCompleted { get; set; }
+        // ========== QUIZ ==========
+        public class QuizQuestion
+        {
+            public string Question { get; set; }
+            public List<string> Answers { get; set; }
+            public int CorrectIndex { get; set; }
+        }
+
+        private List<QuizQuestion> quizQuestions = new List<QuizQuestion>();
+        private int currentQuestionIndex = 0;
+        private int score = 0;
+
+        private void LoadQuizQuestions()
+        {
+            quizQuestions = new List<QuizQuestion>
+            {
+                new QuizQuestion
+                {
+                    Question = "What should you do if you receive an email asking for your password?",
+                    Answers = new List<string> { "Reply with your password", "Delete the email", "Report it as phishing", "Ignore it" },
+                    CorrectIndex = 2
+                },
+                new QuizQuestion
+                {
+                    Question = "Which of the following is a strong password?",
+                    Answers = new List<string> { "123456", "password", "Welcome123", "A$7dFg!2kLm" },
+                    CorrectIndex = 3
+                },
+                new QuizQuestion
+                {
+                    Question = "Which one is an example of social engineering?",
+                    Answers = new List<string> { "Brute force attack", "Phishing email", "Firewall misconfiguration", "SQL injection" },
+                    CorrectIndex = 1
+                }
+            };
+        }
+
+        private void DisplayCurrentQuestion()
+        {
+            if (currentQuestionIndex >= quizQuestions.Count)
+            {
+                QuestionTextBlock.Text = "Quiz Complete!";
+                AnswerButtonsPanel.Children.Clear();
+                ScoreTextBlock.Text = $"Your Score: {score} / {quizQuestions.Count}";
+                NextQuestionButton.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            var question = quizQuestions[currentQuestionIndex];
+            QuestionTextBlock.Text = question.Question;
+            AnswerButtonsPanel.Children.Clear();
+
+            for (int i = 0; i < question.Answers.Count; i++)
+            {
+                int answerIndex = i;
+                Button answerButton = new Button
+                {
+                    Content = question.Answers[i],
+                    Margin = new Thickness(0, 5, 0, 5),
+                    Tag = answerIndex
+                };
+                answerButton.Click += AnswerButton_Click;
+                AnswerButtonsPanel.Children.Add(answerButton);
+            }
+
+            FeedbackTextBlock.Text = "";
+            NextQuestionButton.Visibility = Visibility.Hidden;
+        }
+
+        private void AnswerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button clickedButton)
+            {
+                int selectedIndex = (int)clickedButton.Tag;
+                int correctIndex = quizQuestions[currentQuestionIndex].CorrectIndex;
+
+                if (selectedIndex == correctIndex)
+                {
+                    FeedbackTextBlock.Text = "Correct!";
+                    score++;
+                }
+                else
+                {
+                    FeedbackTextBlock.Text = $"Incorrect. Correct answer: {quizQuestions[currentQuestionIndex].Answers[correctIndex]}";
+                }
+
+                foreach (Button btn in AnswerButtonsPanel.Children)
+                    btn.IsEnabled = false;
+
+                NextQuestionButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void NextQuestionButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentQuestionIndex++;
+            DisplayCurrentQuestion();
+        }
     }
 }
