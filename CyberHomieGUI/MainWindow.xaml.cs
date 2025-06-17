@@ -3,257 +3,281 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace CyberHomieGUI
 {
     public partial class MainWindow : Window
     {
-        // Reminder Task model
-        public class ReminderTask
-        {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public DateTime ReminderDate { get; set; }
-            public bool IsDone { get; set; }
-        }
+        private readonly Dictionary<string, List<string>> chatbotResponses = new();
+        private readonly Dictionary<string, int> responseIndices = new();
+        private readonly Random random = new();
 
-        // Quiz Question model
-        public class QuizQuestion
-        {
-            public string Question { get; set; }
-            public List<string> Answers { get; set; }
-            public int CorrectAnswerIndex { get; set; }
-        }
-
-        private List<ReminderTask> tasks = new();
         private List<QuizQuestion> quizQuestions = new();
         private int currentQuestionIndex = 0;
         private int score = 0;
 
+        private List<string> activityLog = new();
+
         public MainWindow()
         {
             InitializeComponent();
+            LoadChatbotResponses();
             LoadQuizQuestions();
-            DisplayQuestion();
-            ShowHelpOptions();
+            DisplayGreetingMenu();
         }
 
-        private void ShowHelpOptions()
+        private void DisplayGreetingMenu()
         {
-            ChatHistoryTextBlock.Text += "CyberHomie 🧠: Yo! Ask me anything cyber-related. Try these:\n" +
-                "- What's phishing?\n" +
-                "- Tips for strong passwords?\n" +
-                "- What is malware?\n" +
-                "- What's 2FA?\n" +
-                "- Why should I update software?\n" +
-                "- I need advice!\n\n";
+            ChatHistory.Text += "CyberHomie: Yo! I'm your digital homie 💻 – here's what I can school you on:\n";
+            ChatHistory.Text += "[1] Phishing 🎣\n[2] Password Safety 🔑\n[3] Firewalls 🧱\n[4] Social Engineering 🎭\n[5] 2FA 🔐\n";
+            ChatHistory.Text += "Type the number or ask a question to learn more!\n";
         }
 
-        // CHATBOT -- SEND MESSAGE
-        private void SendButton_Click(object sender, RoutedEventArgs e)
+        private void LoadChatbotResponses()
         {
-            string userMessage = UserInputTextBox.Text.Trim();
-
-            if (string.IsNullOrEmpty(userMessage))
-                return;
-
-            ChatHistoryTextBlock.Text += $"You: {userMessage}\n";
-            UserInputTextBox.Clear();
-
-            string response = GetNlpResponse(userMessage);
-            ChatHistoryTextBlock.Text += $"CyberHomie 🧠: {response}\n";
-        }
-
-        // CHATBOT -- NLP MATCHING
-        private string GetNlpResponse(string input)
-        {
-            string message = input.ToLower();
-
-            // Create keyword matching
-            var responses = new Dictionary<string[], List<string>>
-            {
-                { new[] { "phishing", "scam", "fake link" }, new List<string> {
-                    "Yo fam, phishing is when someone tries to trick you with fake emails. Don't click weird links 🧃",
-                    "That’s a scam move, bro. If it smells phishy, delete it!",
-                    "Nah dawg, that link ain’t it. Real homies don’t get phished."
-                }},
-                { new[] { "password", "strong password", "password tip", "password safety" }, new List<string> {
-                    "Use 12+ characters, homie. Mix numbers, letters, and 🔥 symbols!",
-                    "Never use '123456', bro. That's rookie level.",
-                    "Make it strong, make it weird. Ain’t nobody cracking that!"
-                }},
-                { new[] { "malware", "virus", "spyware" }, new List<string> {
-                    "That’s bad news bro — malware messes up your stuff. Always run protection 💾",
-                    "Malware be lurking like a thief. Stay updated and scan often.",
-                    "One click on a shady file and boom 💥 you got malware. Don’t play."
-                }},
-                { new[] { "2fa", "two factor", "authentication" }, new List<string> {
-                    "2FA is like a secret handshake for your accounts 🤝",
-                    "Extra layer = extra safety. Always turn on 2FA, bro!",
-                    "Hackers hate 2FA. That’s why we love it 😎"
-                }},
-                { new[] { "update", "patch", "software" }, new List<string> {
-                    "Always update your gear, homie. Patches fix weak spots.",
-                    "Outdated software is like an open window. Keep it closed!",
-                    "Stay sharp, update often 🔧"
-                }},
-                { new[] { "tip", "advice", "suggestion" }, new List<string> {
-                    "Don't share personal info. Even your cat's name could be a clue 🐱",
-                    "Lock your screen when you leave. Always.",
-                    "Use different passwords for everything, trust me 🔑"
-                }},
-                { new[] { "hello", "hi", "hey", "yo" }, new List<string> {
-                    "Yo! You good? Wanna learn some cyber-stuff, homie?",
-                    "Hey hey! CyberHomie’s in the building 🛡️",
-                    "Wassup, legend? Ask me anything techy!"
-                }},
-                { new[] { "help", "what can i ask", "what do you know" }, new List<string> {
-                    "Ask me about phishing, passwords, malware, 2FA, or just tips to stay safe, bro.",
-                    "Try 'what’s a strong password?' or 'tell me about 2FA'. I gotchu.",
-                    "I’m the plug for cybersecurity facts. Fire away!"
-                }},
+            chatbotResponses["1"] = new List<string> {
+                "Phishing’s when scammers bait you with fake links or emails. Stay alert, homie. 🎣",
+                "Phishing = fraud vibes. Hover before you click. 😂",
+                "Hackers out here sending fake login pages. Don’t bite. 🐟",
+                "Fake banks? Fake invoices? That’s phishing too. Stay woke. 🧠",
+                "If it feels sus, it probably is. Spam it and dip. 🚫"
             };
 
-            // Match message to a category
-            foreach (var pair in responses)
-            {
-                foreach (var keyword in pair.Key)
-                {
-                    if (message.Contains(keyword))
-                    {
-                        var possibleResponses = pair.Value;
-                        var random = new Random();
-                        return possibleResponses[random.Next(possibleResponses.Count)];
-                    }
-                }
-            }
+            chatbotResponses["2"] = new List<string> {
+                "Passwords gotta be strong, bro — no birthdays or pet names. Use symbols! 🔐",
+                "Longer = stronger. Passphrases work too, my G! 💪",
+                "Use different passwords for each app – don’t get lazy. 🔄",
+                "Switch it up every few months to stay ahead. 🔁",
+                "Avoid '123456' or 'admin' — come on now 😅"
+            };
 
-            // Fallback if no match
-            return "Hmm... I didn’t catch that, bro. Try asking me about phishing, passwords, or 2FA. 💬";
+            chatbotResponses["3"] = new List<string> {
+                "Firewalls are like bouncers for your data — keep the sketch out. 🧱",
+                "They filter bad traffic from reaching your system. 🚷",
+                "Corporate networks use them heavy — for a reason. 💼",
+                "No firewall = open doors to hackers. Nah fam. 🚪",
+                "Windows Defender has one — make sure it’s on. ✔"
+            };
+
+            chatbotResponses["4"] = new List<string> {
+                "Social engineers sweet talk you into leaking info. Don’t fall for the game. 🎭",
+                "They’ll act like your boss or IT guy — verify always. 🧑‍💼",
+                "If someone rushes you to act quick — 🚨 red flag.",
+                "Hackers manipulate emotions. Stay sharp. 🧠",
+                "Google their email or double-check internally. 🔎"
+            };
+
+            chatbotResponses["5"] = new List<string> {
+                "2FA = backup squad. Use it wherever you can. 📲",
+                "Even if someone gets your password, 2FA blocks them. Double up! 🔐",
+                "SMS is okay, but authenticator apps are 🔥.",
+                "Some platforms even offer biometric 2FA. Tech flex. 😎",
+                "Never ignore that 6-digit code prompt — it’s your bodyguard. 🛡"
+            };
+
+            foreach (var key in chatbotResponses.Keys)
+                responseIndices[key] = 0;
         }
 
-        // TASK ASSISTANT
+        private void HandleChatInput()
+        {
+            string input = UserInputTextBox.Text.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(input)) return;
+
+            ChatHistory.Text += $"You: {input}\n";
+
+            string? responseKey = chatbotResponses.Keys.FirstOrDefault(k =>
+                input.Contains(k) ||
+                (k == "1" && input.Contains("phish")) ||
+                (k == "2" && input.Contains("password")) ||
+                (k == "3" && input.Contains("firewall")) ||
+                (k == "4" && input.Contains("social")) ||
+                (k == "5" && (input.Contains("2fa") || input.Contains("two-factor")))
+            );
+
+            if (!string.IsNullOrEmpty(responseKey))
+            {
+                var responses = chatbotResponses[responseKey];
+                int index = responseIndices[responseKey];
+
+                ChatHistory.Text += $"CyberHomie: {responses[index]}\n";
+                responseIndices[responseKey] = (index + 1) % responses.Count;
+
+                LogActivity($"Asked about topic {responseKey}");
+            }
+            else
+            {
+                ChatHistory.Text += "CyberHomie: I’m not sure what you mean, try a number or keyword like ‘firewall’. 🤷\n";
+            }
+
+            UserInputTextBox.Clear();
+            ChatScrollViewer.ScrollToEnd();
+        }
+
+        private void LogActivity(string message)
+        {
+            if (activityLog.Count >= 10)
+                activityLog.RemoveAt(0);
+            activityLog.Add($"{DateTime.Now:t} – {message}");
+        }
+
+        private void ShowLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChatHistory.Text += "CyberHomie: Here's what we've done so far:\n";
+            foreach (var entry in activityLog)
+            {
+                ChatHistory.Text += $"• {entry}\n";
+            }
+            ChatScrollViewer.ScrollToEnd();
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e) => HandleChatInput();
+
+        private void UserInputTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                HandleChatInput();
+        }
+
+        public class TaskItem
+        {
+            public string? Title { get; set; }
+            public string? Description { get; set; }
+            public DateTime ReminderDate { get; set; }
+        }
+
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            string title = TitleTextBox.Text.Trim();
-            string description = DescriptionTextBox.Text.Trim();
-            DateTime? reminderDate = ReminderDatePicker.SelectedDate;
-
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(description) || reminderDate == null)
+            if (string.IsNullOrWhiteSpace(TitleTextBox.Text) ||
+                string.IsNullOrWhiteSpace(DescriptionTextBox.Text) ||
+                !ReminderDatePicker.SelectedDate.HasValue)
             {
-                MessageBox.Show("Please fill in all fields.");
+                MessageBox.Show("Fill in all the fields, homie.");
                 return;
             }
 
-            tasks.Add(new ReminderTask
+            TaskItem newTask = new TaskItem
             {
-                Title = title,
-                Description = description,
-                ReminderDate = reminderDate.Value,
-                IsDone = false
-            });
+                Title = TitleTextBox.Text,
+                Description = DescriptionTextBox.Text,
+                ReminderDate = ReminderDatePicker.SelectedDate.Value
+            };
+
+            TaskListView.Items.Add(newTask);
+            LogActivity($"Added task: {newTask.Title}");
 
             TitleTextBox.Clear();
             DescriptionTextBox.Clear();
             ReminderDatePicker.SelectedDate = null;
+        }
 
-            RefreshTaskList();
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TaskListView.SelectedItem is TaskItem selected)
+            {
+                LogActivity($"Deleted task: {selected.Title}");
+                TaskListView.Items.Remove(selected);
+            }
         }
 
         private void MarkDoneButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TaskListView.SelectedItem is ReminderTask task)
+            if (TaskListView.SelectedItem is TaskItem selected)
             {
-                task.IsDone = true;
-                RefreshTaskList();
+                MessageBox.Show($"Task '{selected.Title}' marked as done! ✅");
+                LogActivity($"Marked task done: {selected.Title}");
             }
         }
 
-        private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
+        public class QuizQuestion
         {
-            if (TaskListView.SelectedItem is ReminderTask task)
-            {
-                tasks.Remove(task);
-                RefreshTaskList();
-            }
+            public string? Question { get; set; }
+            public List<string>? Answers { get; set; }
+            public int CorrectIndex { get; set; }
         }
 
-        private void RefreshTaskList()
-        {
-            TaskListView.ItemsSource = null;
-            TaskListView.ItemsSource = tasks;
-        }
-
-        // QUIZ TAB
         private void LoadQuizQuestions()
         {
             quizQuestions = new List<QuizQuestion>
             {
-                new QuizQuestion { Question = "What should you do if you receive a suspicious email?", Answers = new List<string> { "Reply to it", "Ignore it", "Report it", "Click the link" }, CorrectAnswerIndex = 2 },
-                new QuizQuestion { Question = "What does 2FA stand for?", Answers = new List<string> { "Two-Factor Authentication", "Fast Action", "Free Access", "Firewall Access" }, CorrectAnswerIndex = 0 },
-                new QuizQuestion { Question = "Which is the strongest password?", Answers = new List<string> { "password123", "P@ssw0rd!", "123456", "qwerty" }, CorrectAnswerIndex = 1 }
+                new QuizQuestion { Question = "What is phishing?", Answers = new List<string>{ "A scam to steal your data", "An email scam pretending to be real", "Clickbait used by cyber crooks", "A fake login page trick", "Emails from 'banks' asking for info" }, CorrectIndex = 0 },
+                new QuizQuestion { Question = "Which is a strong password?", Answers = new List<string>{ "P@ssw0rd!234", "UniquePhrase!88", "123456", "YourName123", "admin" }, CorrectIndex = 0 },
+                new QuizQuestion { Question = "What does a firewall do?", Answers = new List<string>{ "Filters network traffic", "Blocks unauthorized access", "Deletes junk files", "Boosts speed", "Manages user accounts" }, CorrectIndex = 0 },
+                new QuizQuestion { Question = "What is social engineering?", Answers = new List<string>{ "Tricking someone for info", "Manipulating people to leak data", "Coding in public", "Building websites", "Hacking servers" }, CorrectIndex = 0 },
+                new QuizQuestion { Question = "Why use 2FA?", Answers = new List<string>{ "Add extra protection", "Stops hackers even with password", "Change themes", "Faster logins", "Block spam" }, CorrectIndex = 0 }
             };
         }
 
-        private void DisplayQuestion()
+        private void ShowCurrentQuestion()
         {
             if (currentQuestionIndex >= quizQuestions.Count)
             {
                 QuestionTextBlock.Text = $"Quiz complete! Your score: {score}/{quizQuestions.Count}";
-                AnswerButtonsPanel.Children.Clear();
+                AnswerButtonsPanel.Visibility = Visibility.Collapsed;
                 NextQuestionButton.Visibility = Visibility.Collapsed;
                 return;
             }
 
             var question = quizQuestions[currentQuestionIndex];
             QuestionTextBlock.Text = question.Question;
-            AnswerButtonsPanel.Children.Clear();
 
+            AnswerButtonsPanel.Children.Clear();
             for (int i = 0; i < question.Answers.Count; i++)
             {
-                var button = new Button
+                Button btn = new Button
                 {
                     Content = question.Answers[i],
-                    Tag = i,
-                    Margin = new Thickness(4),
-                    Padding = new Thickness(10),
-                    Background = System.Windows.Media.Brushes.LightCyan
+                    Margin = new Thickness(5),
+                    Tag = i
                 };
-                button.Click += AnswerButton_Click;
-                AnswerButtonsPanel.Children.Add(button);
+                btn.Click += AnswerButton_Click;
+                AnswerButtonsPanel.Children.Add(btn);
             }
 
-            FeedbackTextBlock.Text = string.Empty;
-            NextQuestionButton.Visibility = Visibility.Hidden;
+            NextQuestionButton.Visibility = Visibility.Collapsed;
+            FeedbackTextBlock.Text = "";
         }
 
         private void AnswerButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            int selected = (int)button.Tag;
-
             var question = quizQuestions[currentQuestionIndex];
+            var selectedIndex = (int)((Button)sender).Tag;
 
-            if (selected == question.CorrectAnswerIndex)
+            if (selectedIndex == question.CorrectIndex)
             {
-                FeedbackTextBlock.Text = "🔥 Correct!";
+                FeedbackTextBlock.Text = "Correct! You smart smart. 🔐✅";
                 score++;
             }
             else
             {
-                FeedbackTextBlock.Text = $"❌ Nope! Correct answer: {question.Answers[question.CorrectAnswerIndex]}";
+                FeedbackTextBlock.Text = $"Oops! Correct answer: {question.Answers[question.CorrectIndex]}";
             }
 
-            foreach (Button b in AnswerButtonsPanel.Children)
-                b.IsEnabled = false;
+            foreach (Button btn in AnswerButtonsPanel.Children)
+                btn.IsEnabled = false;
 
+            LogActivity($"Answered quiz question {currentQuestionIndex + 1}");
             NextQuestionButton.Visibility = Visibility.Visible;
         }
 
         private void NextQuestionButton_Click(object sender, RoutedEventArgs e)
         {
             currentQuestionIndex++;
-            DisplayQuestion();
+            ShowCurrentQuestion();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl tabControl && tabControl.SelectedItem is TabItem selectedTab)
+            {
+                if (selectedTab.Header.ToString().Contains("Quiz"))
+                {
+                    currentQuestionIndex = 0;
+                    score = 0;
+                    ShowCurrentQuestion();
+                }
+            }
         }
     }
 }
