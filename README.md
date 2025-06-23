@@ -43,11 +43,6 @@ This app combines cybersecurity awareness with interactive learning through a ch
 - Apply basic natural language processing (keyword matching)
 - Reinforce understanding of cybersecurity concepts
 
-## 📸 Screenshots
-
-| Chatbot | Task Assistant | Quiz |
-|--------|----------------|------|
-| ![chat](screenshots/chatbot.png) | ![task](screenshots/task.png) | ![quiz](screenshots/quiz.png) |
 
 ## ✅ How to Run
 1. Open the solution in Visual Studio 2022.
