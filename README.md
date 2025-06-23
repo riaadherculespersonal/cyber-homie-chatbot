@@ -58,6 +58,8 @@ This app combines cybersecurity awareness with interactive learning through a ch
 Riaad Hercules (ST10258492)  
 CyberHomie WPF Project – PROG6221 Programming 2A
 
+Youtube Link
+https://youtu.be/Da6XeTsdMaE
 ---
 
 🧠 “Stay woke, stay safe, stay sharp — CyberHomie’s got your back!”
