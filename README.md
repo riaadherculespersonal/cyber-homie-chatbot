@@ -33,7 +33,7 @@ This app combines cybersecurity awareness with interactive learning through a ch
 - Shows up to 10 recent activities (e.g., added tasks, quiz answered, topics asked)
 
 ## 🛠 Tech Stack
-- C# .NET 6 (WPF)
+- C# .NET 8 (WPF)
 - XAML UI design
 - MVVM-inspired logic (in a single-window simplified structure)
 
