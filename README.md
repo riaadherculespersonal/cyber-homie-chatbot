@@ -1,60 +1,77 @@
+# CyberHomie WPF Application – Programming 2A POE Part 3
 
-# 🤖 CyberHomie – Digital Defender
+## 📌 Overview
 
-A cool, quirky, and educational WPF desktop app built in C# for second-year Computer Science students.
-This app combines cybersecurity awareness with interactive learning through a chatbot, task assistant, and quiz features.
+**CyberHomie** is a WPF desktop application developed as part of the **Programming 2A** module at IIE. The application provides three interactive features:
+
+- 💬 **Chatbot**: A Gen-Z-styled cybersecurity chatbot offering educational responses to 5 core topics.
+- 🧠 **Cyber Quiz**: An interactive multiple-choice quiz to reinforce learning.
+- ✅ **Task Assistant**: A digital to-do list that allows users to add, mark, and delete tasks with reminders.
+
+## 👨‍💻 Author
+
+- **Name**: Riaad Hercules  
+- **Student Number**: ST10258492  
+- **Module**: Programming 2A  
+- **POE**: Part 3  
+- **Date**: June 2025
+
+## 🛠 Technologies Used
+
+- **.NET 6 / WPF (XAML)**
+- **C# (Backend Logic)**
+- **Visual Studio 2022**
+- **MVVM-inspired design patterns (partial)**
 
 ## 🚀 Features
 
-### 💬 Chatbot (CyberHomie)
-- Friendly digital homie who teaches you about:
-  - [1] Phishing 🎣
-  - [2] Password Safety 🔐
-  - [3] Firewalls 🧱
-  - [4] Social Engineering 🎭
-  - [5] 2FA (Two-Factor Authentication) 📲
-- Slang-rich responses, rotates between multiple answers per topic before repeating
-- NLP-style keyword detection (e.g., "firewall", "password", "2FA")
-- Displays a greeting menu when app starts
+- **Modern UI** using XAML with data binding and intuitive layouts
+- **Chatbot tab** with alternating responses that loop intelligently per topic
+- **Quiz tab** with scoring, feedback, and quiz progression logic
+- **Task Assistant tab** with task input, validation, and activity tracking
 
-### 📅 Task Assistant
-- Add tasks with title, description, and reminder date
-- Mark tasks as done or delete them
-- Tasks clearly visible in ListView with styled layout
-- Automatically logs activities (add, delete, complete)
+## 📸 Screenshots
 
-### 🧠 Cybersecurity Quiz
-- 5-question quiz aligned with chatbot topics
-- Feedback after each answer (slang responses)
-- Score shown at the end
-- Automatically resets when switching tabs
+> See `/Screenshots/` folder for UI screenshots:
+- `chatbot-tab.png`
+- `quiz-tab.png`
+- `task-assistant.png`
 
-### 📝 Activity Log
-- Shows up to 10 recent activities (e.g., added tasks, quiz answered, topics asked)
+## 🤝 Acknowledgements
 
-## 🛠 Tech Stack
-- C# .NET 8 (WPF)
-- XAML UI design
-- MVVM-inspired logic (in a single-window simplified structure)
+While the entire application was designed, structured, and tested by myself, I used **ChatGPT** as a study and support tool during the development of this POE. It assisted in refining:
 
-## 🎯 Intended Learning Outcomes
-- Implement WPF user interface design and data binding
-- Work with lists, objects, dictionaries, and user events
-- Apply basic natural language processing (keyword matching)
-- Reinforce understanding of cybersecurity concepts
+- C# logic for quiz scoring and state handling  
+- Error checking and data binding issues in WPF  
+- UI layout structuring and control flow within event handlers
+
+This helped deepen my understanding of WPF development and ensure smoother functionality throughout the application.
+
+## 📂 Project Structure
+
+CyberHomieGUI/
+├── App.xaml
+├── App.xaml.cs
+├── MainWindow.xaml
+├── MainWindow.xaml.cs
+├── README.md
+├── quiz-tab.png
+├── task-assistant.png
+├── chatbot-tab.png
+├── CyberHomieGUI.csproj
 
 
-## ✅ How to Run
-1. Open the solution in Visual Studio 2022.
-2. Build the solution (`Ctrl+Shift+B`)
-3. Run (`F5`) and explore the tabs!
+## ✅ Status
 
-## 🙌 Author
-Riaad Hercules (ST10258492)  
-CyberHomie WPF Project – PROG6221 Programming 2A
+✔ Functional and tested  
+✔ POE requirements met  
+✔ Video uploaded to YouTube  
+✔ GitHub repository committed and structured
 
-Youtube Link
-https://youtu.be/Da6XeTsdMaE
+## 🔗 Links
+
+- 📺 [YouTube Video Presentation]( https://youtu.be/Da6XeTsdMaE)
+- 🧠 [GitHub Repository](
+
 ---
 
-🧠 “Stay woke, stay safe, stay sharp — CyberHomie’s got your back!”
