@@ -18,10 +18,10 @@
 
 ## 🛠 Technologies Used
 
-- **.NET 6 / WPF (XAML)**
+- **.NET 8 / WPF (XAML)**
 - **C# (Backend Logic)**
 - **Visual Studio 2022**
-- **MVVM-inspired design patterns (partial)**
+-
 
 ## 🚀 Features
 
@@ -71,7 +71,7 @@ CyberHomieGUI/
 ## 🔗 Links
 
 - 📺 [YouTube Video Presentation]( https://youtu.be/Da6XeTsdMaE)
-- 🧠 [GitHub Repository](
+- 🧠 [GitHub Repository](https://github.com/IIEMSA/prog6221-summative-final-herculesriaadst10258492)
 
 ---
 
