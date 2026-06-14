@@ -1,8 +1,8 @@
-# CyberHomie WPF Application – Programming 2A POE Part 3
+# CyberHomie WPF Application 
 
 ## 📌 Overview
 
-**CyberHomie** is a WPF desktop application developed as part of the **Programming 2A** module at IIE. The application provides three interactive features:
+**CyberHomie** is a WPF desktop application. The application provides three interactive features:
 
 - 💬 **Chatbot**: A Gen-Z-styled cybersecurity chatbot offering educational responses to 5 core topics.
 - 🧠 **Cyber Quiz**: An interactive multiple-choice quiz to reinforce learning.
@@ -10,10 +10,7 @@
 
 ## 👨‍💻 Author
 
-- **Name**: Riaad Hercules  
-- **Student Number**: ST10258492  
-- **Module**: Programming 2A  
-- **POE**: Part 3  
+- **Name**: Riaad Hercules    
 - **Date**: June 2025
 
 ## 🛠 Technologies Used
@@ -71,7 +68,7 @@ CyberHomieGUI/
 ## 🔗 Links
 
 - 📺 [YouTube Video Presentation]( https://youtu.be/Da6XeTsdMaE)
-- 🧠 [GitHub Repository](https://github.com/IIEMSA/prog6221-summative-final-herculesriaadst10258492)
+
 
 ---
 
